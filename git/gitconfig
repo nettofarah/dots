@@ -1,6 +1,6 @@
 [user]
-  name = Joao Vortmann
-  email = jvortmann@gmail.com
+  name = Netto Farah
+  email = nettofarah@gmail.com
 
 [color]
   status = auto
@@ -18,10 +18,10 @@
   remote = cyan
 
 [color "diff"]
-  meta = yellow 
-  frag = cyan 
+  meta = yellow
+  frag = cyan
   old = red
-  new = green 
+  new = green
 
 [color "status"]
   added = green

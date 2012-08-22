@@ -31,3 +31,61 @@ d() { cd $(dirname $(fn "$1")); }
 c() { cat $(fn "$1"); }
 
 function hex { echo "obase=16; $1" | bc; }
+
+send_modified_files() {
+  if [ "$#" -ne "1" ]; then echo "Usage: send_modified_files /path/on/vm/to/workspace/project" >&2; return 1; fi
+
+git ls-files --modified | while read line
+do
+from="$line";
+  to="${1}/${line#*/}";
+  echo /bin/cp -f "'${from}'" "'${to}'"
+  /bin/rm -f "$to"
+  mkdir -p "$(dirname "${to}")"
+  /bin/cp -f "${from}" "${to}"
+done
+}
+
+send_uncommited_files() {
+  if [ "$#" -ne "1" ]; then echo "Usage: send_uncommited_files /path/on/vm/to/workspace/project" >&2; return 1; fi
+
+git status --porcelain | cut -c4- | sort | uniq | while read line
+do
+from="$line";
+  to="${1}/${line#*/}";
+  echo /bin/cp -f "'${from}'" "'${to}'"
+  mkdir -p "$(dirname "${to}")"
+  /bin/cp -f "${from}" "${to}"
+done
+}
+
+send_commits() {
+  if [ "$#" -ne "2" ]; then echo "Usage: send_commits number-of-commits /path/to/mounted/workspace/project" >&2; return 1; fi
+
+git log --name-status -n "$1" | grep '^[A-Z][[:space:]]\+.*/.*' | sort -k2 | uniq -f1 | while read status line;
+do
+from="$line";
+  to="${2}/${line#*/}";
+  case "$status" in
+    A|M)
+      echo /bin/rm -f "${to}"
+      echo /bin/cp -f "'${from}'" "'${to}'"
+      /bin/rm -f "$to"
+      /bin/cp -f "${from}" "${to}"
+      ;;
+    D)
+      echo "Deleting file: $to"
+      /bin/rm -f "$to"
+      ;;
+  esac
+echo "---- ---- ---- ---- ----"
+done
+}
+
+__git_ps1 ()
+{
+    local b="$(git symbolic-ref HEAD 2>/dev/null)";
+    if [ -n "$b" ]; then
+        printf " (%s)" "${b##refs/heads/}";
+    fi
+}

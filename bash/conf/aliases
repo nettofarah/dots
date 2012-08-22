@@ -1,5 +1,5 @@
 # make ls colorful
-alias ls='ls --color=auto'
+alias ls='ls -G'
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
@@ -28,4 +28,8 @@ alias ber="bundle exec rake"
 #rails alias
 alias r="rails"
 # alias to current projects folder
-alias gc="cd ~/prj/current"
+alias gc="cd ~/gid/autopop2"
+alias 8t="cd ~/projects/8tracks.com"
+alias hg="history | grep"
+alias start-redis='redis-server /usr/local/etc/redis.conf > /dev/null 2>&1 &'
+alias rt="RAILS_ENV=test"
